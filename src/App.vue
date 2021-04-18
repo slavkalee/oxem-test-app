@@ -3,13 +3,19 @@
     <nav>
       <TabItem
         name="Маленький набор данных"
+        :tabId="1"
         :getUsers="getUsers"
         :data="SM_DATA"
+        :activeStatus="activeTab"
+        :setTabHandler="setTabHandler"
       />
       <TabItem
         name="Большой набор данных"
+        :tabId="2"
         :getUsers="getUsers"
         :data="LG_DATA"
+        :activeStatus="activeTab"
+        :setTabHandler="setTabHandler"
       />
     </nav>
     <DataTable
@@ -23,7 +29,7 @@
 </template>
 
 <script>
-import { computed, reactive } from "vue";
+import { computed, reactive, ref } from "vue";
 import { useStore } from "vuex";
 
 import Loader from "@/components/Loader";
@@ -44,6 +50,10 @@ export default {
     const search = reactive({
       value: "",
     });
+
+    const activeTab = ref(0);
+
+    const setTabHandler = (tabId) => activeTab.value = tabId;
 
     const setValue = (e) => (search.value = e.target.value);
 
@@ -67,6 +77,8 @@ export default {
       LG_DATA,
       search,
       setValue,
+      activeTab,
+      setTabHandler,
       loading: computed(() => store.getters.loading),
       fetched: computed(() => store.getters.fetched),
     };

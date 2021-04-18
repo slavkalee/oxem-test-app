@@ -187,7 +187,7 @@
 
           <tr
             v-for="user of displayData"
-            :key="user.id + Math.random()"
+            :key="user.id + user.firstName"
             @click="onClickRow(user.id, user.firstName)"
           >
             <TableItem

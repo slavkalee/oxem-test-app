@@ -1,5 +1,9 @@
 <template>
-  <button class="tab__item" @click="getUsers(data)">
+  <button
+    class="tab__item"
+    :class="{ active: activeStatus === tabId }"
+    @click="onClick"
+  >
     {{ name }}
   </button>
 </template>
@@ -10,6 +14,23 @@ export default {
     name: String,
     data: String,
     getUsers: Function,
+    setTabHandler: Function,
+    tabId: Number,
+    activeStatus: {
+      type: Number,
+      default: null,
+      required: true,
+    },
+  },
+  setup(props) {
+    const onClick = () => {
+      props.setTabHandler(props.tabId)
+      props.getUsers(props.data);
+    };
+
+    return {
+      onClick,
+    };
   },
 };
 </script>
