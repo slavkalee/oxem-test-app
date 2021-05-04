@@ -18,12 +18,14 @@
         :setTabHandler="setTabHandler"
       />
     </nav>
-    <DataTable
-      v-if="!loading && fetched"
-      :users="users"
-      :searchString="search.value"
-      :searchHandler="setValue"
-    />
+    <transition name="table">
+      <DataTable
+        v-if="!loading && fetched"
+        :users="users"
+        :searchString="search.value"
+        :searchHandler="setValue"
+      />
+    </transition>
     <Loader v-if="loading" />
   </div>
 </template>
@@ -118,6 +120,16 @@ input {
   &:disabled path {
     fill: #a0a1a3;
   }
+}
+.table-enter-active,
+.table-leave-active {
+  transition: all 0.4s ease-out;
+}
+
+.table-enter-from,
+.table-leave-to {
+  transform: translateX(400px);
+  opacity: 0;
 }
 </style>
 

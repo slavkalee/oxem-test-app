@@ -1,7 +1,7 @@
 <template>
   <div class="user" v-if="visible">
     <div class="close">
-      <button class="icon-btn" @click="setEditable">
+      <button class="icon-btn" @click="setEditable" v-if="!editable">
         <i class="material-icons">edit</i>
       </button>
       <button class="icon-btn" @click="hide">
@@ -14,10 +14,14 @@
     </div>
     <div class="user__description">
       <div class="user__description_title">Описание:</div>
-      <div class="user__text" v-if="!editable">
+      <div class="user__text" v-if="!editable && user.description">
         {{ capitalize(user.description) }}
       </div>
-      <textarea v-model="inputValues.description" v-else />
+      <b v-if="!user.description && !editable">Описания нету</b>
+      <textarea
+        v-model="inputValues.description"
+        v-if="editable"
+      />
     </div>
     <div class="user__address">
       <div class="user__row">
@@ -25,28 +29,48 @@
         <div class="user__text" v-if="!editable">
           {{ addressInfo(user.address.streetAddress) }}
         </div>
-        <input type="text" v-model="inputValues.streetAddress" v-else />
+        <input
+          type="text"
+          class="user__input"
+          v-model="inputValues.streetAddress"
+          v-if="editable"
+        />
       </div>
       <div class="user__row">
         <div class="user__subtitle">Город:</div>
         <div class="user__text" v-if="!editable">
           {{ addressInfo(user.address.city) }}
         </div>
-        <input type="text" v-model="inputValues.city" v-else />
+        <input
+          type="text"
+          class="user__input"
+          v-model="inputValues.city"
+          v-if="editable"
+        />
       </div>
       <div class="user__row">
         <div class="user__subtitle">Провинция/Штат:</div>
         <div class="user__text" v-if="!editable">
           {{ addressInfo(user.address.state) }}
         </div>
-        <input type="text" v-model="inputValues.state" v-else />
+        <input
+          type="text"
+          class="user__input"
+          v-model="inputValues.state"
+          v-if="editable"
+        />
       </div>
       <div class="user__row">
         <div class="user__subtitle">Индекс:</div>
         <div class="user__text" v-if="!editable">
           {{ addressInfo(user.address.zip) }}
         </div>
-        <input type="text" v-model="inputValues.zip" v-else />
+        <input
+          type="text"
+          class="user__input"
+          v-model="inputValues.zip"
+          v-if="editable"
+        />
       </div>
     </div>
     <div class="user__actions" v-if="editable">
@@ -77,21 +101,24 @@ export default {
 
     const user = computed(() => store.getters.getUser(props.userData));
 
+    watch(
+      () => user.value && user.value,
+      () => {
+        inputValues.description = props.userData.description;
+        inputValues.streetAddress = props.userData.address.streetAddress;
+        inputValues.city = props.userData.address.city;
+        inputValues.state = props.userData.address.state;
+        inputValues.zip = props.userData.address.zip;
+      }
+    );
+
     const inputValues = reactive({
-      description: '',
+      description: "",
       streetAddress: "",
       city: "",
       state: "",
       zip: "",
     });
-
-    const resetInputValues = () => {
-      inputValues.description = '',
-      inputValues.streetAddress = '',
-      inputValues.city = '',
-      inputValues.state = '',
-      inputValues.zip = ''
-    }
 
     const removeUser = () => {
       props.hide();
@@ -100,7 +127,8 @@ export default {
 
     const onSubmit = () => {
       editable.value = false;
-      
+      console.log(inputValues.description);
+
       store.commit("changeInfo", {
         user: user.value,
         description: inputValues.description,
@@ -111,8 +139,6 @@ export default {
           zip: inputValues.zip,
         },
       });
-
-      resetInputValues();
     };
 
     const editable = ref(false);
@@ -122,7 +148,6 @@ export default {
       () => user.value,
       () => {
         editable.value = false;
-        resetInputValues();
       }
     );
 
@@ -167,13 +192,23 @@ export default {
   }
   &__row {
     display: flex;
-    margin: 5px 0;
-  }
-  &__subtitle {
-    width: 180px;
+    justify-content: space-between;
+    align-items: center;
+    margin: 10px 0;
   }
   &__text {
     font-weight: bold;
+  }
+  &__input {
+    border: none;
+    outline: 0;
+    border-radius: 5px;
+    padding: 5px 5px 5px 10px;
+    background: #fff;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.25);
+    &:focus-within {
+      box-shadow: 0 0 8px rgb(12, 119, 12);
+    }
   }
 }
 .close {
@@ -192,6 +227,9 @@ textarea {
   border-radius: 15px;
   padding: 10px;
   background: #fff;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.25);
+  &:focus-within {
+    box-shadow: 0 0 8px rgb(12, 119, 12);
+  }
 }
 </style>
