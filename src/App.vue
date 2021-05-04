@@ -2,7 +2,7 @@
   <div class="container">
     <nav>
       <TabItem
-        name="Маленький набор данных"
+        name="Маленькие данные"
         :tabId="1"
         :getUsers="getUsers"
         :data="SM_DATA"
@@ -10,7 +10,7 @@
         :setTabHandler="setTabHandler"
       />
       <TabItem
-        name="Большой набор данных"
+        name="Большие данные"
         :tabId="2"
         :getUsers="getUsers"
         :data="LG_DATA"
@@ -29,12 +29,14 @@
 </template>
 
 <script>
-import { computed, reactive, ref } from "vue";
+import { computed } from "vue";
 import { useStore } from "vuex";
 
 import Loader from "@/components/Loader";
 import DataTable from "@/components/DataTable/DataTable";
 import TabItem from "@/components/TabItem";
+import { useSearch } from "@/composition/search";
+import { useTabs } from "@/composition/tabs";
 import { filterBy } from "@/utils";
 
 export default {
@@ -46,16 +48,7 @@ export default {
   },
   setup() {
     const store = useStore();
-
-    const search = reactive({
-      value: "",
-    });
-
-    const activeTab = ref(0);
-
-    const setTabHandler = (tabId) => activeTab.value = tabId;
-
-    const setValue = (e) => (search.value = e.target.value);
+    const { search, setValue } = useSearch();
 
     const SM_DATA =
       "http://www.filltext.com/?rows=32&id={number|1000}&firstName={firstName}&lastName={lastName}&email={email}&phone={phone|(xxx)xxx-xx-xx}&address={addressObject}&description={lorem|32}";
@@ -66,19 +59,14 @@ export default {
       store.dispatch("fetchUsers", url);
     }
 
-    const users = computed(() =>
-      filterBy(store.getters.allUsers, search.value)
-    );
-
     return {
-      users,
       getUsers,
       SM_DATA,
       LG_DATA,
       search,
       setValue,
-      activeTab,
-      setTabHandler,
+      ...useTabs(),
+      users: computed(() => filterBy(store.getters.allUsers, search.value)),
       loading: computed(() => store.getters.loading),
       fetched: computed(() => store.getters.fetched),
     };
@@ -113,7 +101,6 @@ nav {
   margin: 0 0 20px;
 }
 
-
 input {
   font-family: "Poppins";
 }
@@ -124,6 +111,7 @@ input {
   border: none;
   cursor: pointer;
   margin: 0 5px;
+  padding: 0;
   & path {
     fill: #000;
   }

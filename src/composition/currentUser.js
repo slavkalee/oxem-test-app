@@ -1,19 +1,15 @@
-import { reactive, ref } from 'vue';
+import { ref } from 'vue';
 
 export function useCurrentUser() {
   const infoVisible = ref(false);
 
-  const userData = reactive({
-    id: null,
-    name: null,
-  });
+  const userData = ref({})
 
   const showInfo = () => (infoVisible.value = true);
   const hideInfo = () => (infoVisible.value = false);
 
-  const onClickRow = (id, name) => {
-    userData.id = id;
-    userData.name = name;
+  const onClickRow = (user) => {
+    userData.value = user;
     showInfo();
   };
 

@@ -16,15 +16,11 @@ export default {
     getUsers: Function,
     setTabHandler: Function,
     tabId: Number,
-    activeStatus: {
-      type: Number,
-      default: null,
-      required: true,
-    },
+    activeStatus: Number,
   },
   setup(props) {
     const onClick = () => {
-      props.setTabHandler(props.tabId)
+      props.setTabHandler(props.tabId);
       props.getUsers(props.data);
     };
 
@@ -39,13 +35,14 @@ export default {
 .tab__item {
   font-family: "Ubuntu";
   letter-spacing: 1px;
-  padding: 20px 25px;
+  padding: 15px 20px;
   background: #fff;
   border: 1px solid #304d74;
   border-top: none;
   color: #304d74;
   font-weight: bold;
   outline: 0;
+  cursor: pointer;
   &.active {
     color: #fff;
     background: #304d74;

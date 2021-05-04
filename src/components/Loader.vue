@@ -48,7 +48,7 @@ export default {};
   width: 7px;
   height: 14px;
   border-radius: 40px;
-  background: #272622;
+  background: #304d74;
 }
 .lds-spinner div:nth-child(1) {
   transform: rotate(0deg);

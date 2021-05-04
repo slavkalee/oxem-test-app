@@ -34,6 +34,26 @@ export default createStore({
     addUser(state, payload) {
       state.users.unshift(payload);
     },
+    removeUser(state, payload) {
+      state.users = state.users.filter((user) => {
+        const values = Object.values(user).join();
+        const inputValues = Object.values(payload).join();
+
+        return values != inputValues;
+      });
+    },
+    changeInfo(state, payload) {
+      state.users = state.users.map((user) => {
+        const values = Object.values(user).join();
+        const inputValues = Object.values(payload.user).join();
+
+        if (values === inputValues) {
+          user.description = payload.description;
+          user.address = payload.address;
+        }
+        return user;
+      });
+    },
     startLoading(state) {
       state.loading = true;
     },
@@ -47,7 +67,7 @@ export default createStore({
     },
     getUser: (state) => (obj) => {
       return state.users.find(
-        (user) => user.firstName === obj.name && +user.id === +obj.id
+        (user) => Object.values(user).join() === Object.values(obj).join()
       );
     },
     loading: (state) => state.loading,

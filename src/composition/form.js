@@ -54,11 +54,18 @@ export function useForm() {
     if (v$.value.$invalid) return;
 
     store.commit('addUser', {
-      id: form.id + '',
+      id: form.id,
       firstName: form.firstName,
       lastName: form.lastName,
       email: form.email,
-      phone: form.phone + '',
+      phone: form.phone,
+      description: null,
+      address: {
+        streetAddress: null,
+        city: null,
+        state: null,
+        zip: null,
+      },
     });
 
     hideForm();

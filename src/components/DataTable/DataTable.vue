@@ -92,7 +92,7 @@
                   invalid:
                     (v$.id.required.$invalid && v$.id.$dirty) ||
                     v$.id.numeric.$invalid,
-                  valid: !v$.id.required.$invalid,
+                  valid: v$.id.$dirty && !v$.id.required.$invalid,
                 }"
               />
               <span
@@ -110,7 +110,7 @@
                 :class="{
                   invalid:
                     v$.firstName.required.$invalid && v$.firstName.$dirty,
-                  valid: !v$.firstName.required.$invalid,
+                  valid: v$.id.$dirty && !v$.firstName.required.$invalid,
                 }"
               />
               <span
@@ -126,7 +126,7 @@
                 v-model="form.lastName"
                 :class="{
                   invalid: v$.lastName.required.$invalid && v$.lastName.$dirty,
-                  valid: !v$.lastName.required.$invalid,
+                  valid: v$.id.$dirty && !v$.lastName.required.$invalid,
                 }"
               />
               <span
@@ -145,7 +145,9 @@
                     (v$.email.required.$invalid && v$.email.$dirty) ||
                     (v$.email.email.$invalid && v$.email.$dirty),
                   valid:
-                    !v$.email.required.$invalid && !v$.email.email.$invalid,
+                    !v$.email.required.$invalid &&
+                    !v$.email.email.$invalid &&
+                    v$.id.$dirty,
                 }"
               />
               <span
@@ -169,7 +171,9 @@
                     (v$.phone.$dirty && v$.phone.required.$invalid) ||
                     (v$.phone.minLength.$invalid && v$.phone.$dirty),
                   valid:
-                    !v$.phone.required.$invalid && !v$.phone.minLength.$invalid,
+                    !v$.phone.required.$invalid &&
+                    !v$.phone.minLength.$invalid &&
+                    v$.id.$dirty,
                 }"
               />
               <span
@@ -188,7 +192,7 @@
           <tr
             v-for="user of displayData"
             :key="user.id + user.firstName"
-            @click="onClickRow(user.id, user.firstName)"
+            @click="onClickRow(user)"
           >
             <TableItem
               :id="user.id"
@@ -324,6 +328,17 @@ table {
     background: transparent;
     color: #36b404;
     box-shadow: 0 0 10px #36b404;
+  }
+}
+.btn-remove {
+  color: #fff;
+  background: red;
+  border: 1px solid red;
+  transition: 0.4s;
+  &:hover {
+    background: transparent;
+    color: red;
+    box-shadow: 0 0 10px red;
   }
 }
 .btn-cancel {
